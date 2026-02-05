@@ -70,24 +70,29 @@ https://www.libreoffice.org/download/
 
 ---
 
-## 📥 Installation
+## 📥 Download & Installation
 
-### Option 1: Use the Application (Recommended)
+### Use the Application (Recommended)
 
-1. Download `SmartPDFToolkit.exe` (link provided in README or Releases)
-2. Ensure **LibreOffice** is installed on your system
+👉 **Download Smart PDF Toolkit (Windows EXE):**  
+🔗 https://drive.google.com/file/d/1gTl74TdpLm5f5aUsv-K1NIHDCwEKuvNP/view?usp=drive_link
+
+#### Installation Steps
+1. Download `SmartPDFToolkit.exe` from the link above
+2. Install **LibreOffice** (if not already installed)
 3. Double-click the EXE file to launch the application
 
 ✔ No Python installation required  
 ✔ No setup wizard  
 ✔ Works completely offline  
 
-> Note: Windows may show an “Unknown Publisher” warning.  
-> This is normal for unsigned desktop applications.
+> ⚠️ **Windows Security Note**  
+> Windows may display an *“Unknown Publisher”* warning.  
+> This is normal for unsigned desktop applications. Click **More info → Run anyway**.
 
 ---
 
-### Option 2: Run from Source Code (Developers)
+## 🧑‍💻 Run from Source Code (Developers)
 
 ```bash
 pip install PyPDF2 pillow
