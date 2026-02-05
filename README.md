@@ -1,7 +1,7 @@
 # Smart PDF Toolkit 🚀
 
 Smart PDF Toolkit is a **free, offline, unlimited desktop application** for PDF organization and document conversion.  
-It is built for **real users**, **privacy**, and **practical everyday use**.
+It is designed for **real users**, with a strong focus on **privacy**, **simplicity**, and **practical everyday use**.
 
 ✅ No subscriptions  
 ✅ No login  
@@ -9,28 +9,28 @@ It is built for **real users**, **privacy**, and **practical everyday use**.
 ✅ Unlimited conversions  
 ✅ Completely free  
 
-Your files never leave your system.
+Your files **never leave your system**.
 
 ---
 
 ## ✨ Why Smart PDF Toolkit?
 
 Most online PDF tools:
-- Upload your files to servers
-- Limit conversions
-- Require subscriptions
+- Upload your files to external servers
+- Impose daily or monthly usage limits
+- Require paid subscriptions
 - Track user activity
 
 **Smart PDF Toolkit does none of that.**
 
-It is a **local desktop application** designed to work fully offline with a clean, step-by-step interface.
+It is a **local desktop application** that works fully offline and provides a clean, step-by-step interface for common PDF tasks.
 
 ---
 
 ## 🧰 Features
 
 ### 📂 PDF Organization
-- Merge multiple PDF files into one
+- Merge multiple PDF files into a single PDF
 - Split a PDF into individual pages
 
 ### 🔄 Convert to PDF
@@ -39,11 +39,11 @@ It is a **local desktop application** designed to work fully offline with a clea
 - PowerPoint → PDF
 
 ### 🔁 Convert from PDF
-- PDF → Word (best-effort, text-based PDFs)
+- PDF → Word (best-effort conversion for text-based PDFs)
 
 ---
 
-## 🧭 How the App Works
+## 🧭 How the Application Works
 
 All tools follow the **same simple workflow**:
 
@@ -51,17 +51,17 @@ All tools follow the **same simple workflow**:
 2. Choose output file name and location
 3. Start processing
 4. Track progress visually
-5. Cancel or return home anytime
+5. Cancel the operation or return to Home anytime
 
-Clear instructions are shown inside the app for every step.
+Clear instructions are shown inside the application for each step.
 
 ---
 
 ## ⚙️ System Requirements
 
-### Required (Users)
+### For Users
 - **Windows 10 / Windows 11 (64-bit)**
-- **LibreOffice** (must be installed)
+- **LibreOffice** (required for document conversions)
 
 LibreOffice is used internally for Word, PowerPoint, and PDF conversions.
 
@@ -74,14 +74,16 @@ https://www.libreoffice.org/download/
 
 ### Option 1: Use the Application (Recommended)
 
-1. Go to the `app/` folder
-2. Download `SmartPDFToolkit.exe`
-3. Ensure **LibreOffice** is installed
-4. Double-click the EXE to start
+1. Download `SmartPDFToolkit.exe` (link provided in README or Releases)
+2. Ensure **LibreOffice** is installed on your system
+3. Double-click the EXE file to launch the application
 
-✔ No Python required  
+✔ No Python installation required  
 ✔ No setup wizard  
-✔ No internet required  
+✔ Works completely offline  
+
+> Note: Windows may show an “Unknown Publisher” warning.  
+> This is normal for unsigned desktop applications.
 
 ---
 
@@ -90,13 +92,9 @@ https://www.libreoffice.org/download/
 ```bash
 pip install PyPDF2 pillow
 python main.py
-```
+🛠 Build the Application (Developers)
+To generate the Windows executable:
 
----
-
-## 🛠 Build the Application (Developers)
-
-```bash
 pyinstaller ^
  --onefile ^
  --windowed ^
@@ -105,57 +103,54 @@ pyinstaller ^
  --add-data "tools;tools" ^
  --add-data "utils;utils" ^
  main.py
-```
+The executable will be created inside the dist/ folder.
 
----
-
-## 📁 Project Structure
-
-```
+📁 Project Structure
 SmartPDFToolkit/
-├── src/
-├── app/
+├── src/            # Source code
+│   ├── main.py
+│   ├── ui/
+│   ├── tools/
+│   └── utils/
 ├── README.md
-└── .gitignore
-```
+├── .gitignore
+└── LICENSE
+⚠️ Important Notes & Limitations
+PDF → Word Conversion
+Works best with text-based PDFs
 
----
+Scanned or image-only PDFs may not convert correctly
 
-## ⚠️ Important Notes & Limitations
+Formatting quality depends on the original PDF and LibreOffice
 
-### PDF → Word Conversion
-- Works best with **text-based PDFs**
-- Scanned PDFs may not convert correctly
-- Formatting depends on LibreOffice
+The application silently converts whatever is possible and skips unsupported content without showing warnings.
 
-The application silently converts whatever is possible.
+🔐 Privacy & Security
+All files are processed locally on your system
 
----
+No internet connection is required
 
-## 🔐 Privacy & Security
+No analytics, tracking, or data collection
 
-- Files processed locally
-- No internet connection required
-- No tracking or analytics
+No files are stored or shared externally
 
----
+Your documents remain private and secure.
 
-## 🚀 Future Enhancements
+🚀 Future Enhancements
+PDF → Image conversion
 
-- PDF → Image
-- Add page numbers
-- Add watermark
-- Dark mode UI
+Add page numbers
 
----
+Add watermark
 
-## 📜 License
+Dark mode UI
 
-Free for personal and educational use.
+Installer (.msi / setup.exe)
 
----
+📜 License
+This project is free for personal and educational use.
+No subscriptions. No hidden costs.
 
-## 👤 Author
-
-Developed by **Darshan H V**  
+👤 Author
+Developed by Darshan H V
 Smart PDF Toolkit — v1.0
