@@ -1,22 +1,24 @@
 import os
 import threading
 import subprocess
-from typing import Sequence
-from tkinter import filedialog, messagebox
+from tkinter import filedialog
+from PyPDF2 import PdfMerger
 from ui.base_tool import BaseToolScreen
 from utils.soffice import find_soffice
 
 
 class PPTToPDFScreen(BaseToolScreen):
     def __init__(self, parent, app):
-        super().__init__(parent, app, "PPT → PDF")
+        super().__init__(parent, app, "PowerPoint → PDF")
 
-        self.files: Sequence[str] = ()
-        self.output_dir: str = ""
+        self.files = ()
+        self.output_file = ""
 
         self.add_button("Select PPT Files", self.select_files)
-        self.add_button("Select Output Folder", self.select_output)
+        self.add_button("Select Output PDF", self.select_output)
         self.add_button("Start Conversion", self.start)
+
+        self.set_instruction("Select PPT files to continue")
 
     def add_button(self, text, cmd):
         import tkinter as tk
@@ -25,44 +27,43 @@ class PPTToPDFScreen(BaseToolScreen):
     # STEP 1
     def select_files(self):
         self.files = filedialog.askopenfilenames(
-            title="Select PowerPoint Files to Convert",
-            filetypes=[("PowerPoint Files", "*.ppt *.pptx"), ("All Files", "*.*")]
+            title="Select PPT Files",
+            filetypes=[("PowerPoint Files", "*.ppt *.pptx")]
         )
         if self.files:
             self.mark_done(0)
-            self.set_instruction("Now select output folder")
+            self.set_instruction("Select final merged PDF location")
 
     # STEP 2
     def select_output(self):
-        output_path = filedialog.asksaveasfilename(
-            title="Select Output Folder for PDF Files",
+        self.output_file = filedialog.asksaveasfilename(
+            title="Save Final PDF As",
             defaultextension=".pdf",
-            filetypes=[("PDF Files", "*.pdf"), ("All Files", "*.*")]
+            filetypes=[("PDF File", "*.pdf")]
         )
-        if output_path and isinstance(output_path, str):
-            dirname_str = os.path.dirname(output_path)
-            self.output_dir = dirname_str if dirname_str else "."
+        if self.output_file:
             self.mark_done(1)
             self.set_instruction("Click Start Conversion")
 
     # STEP 3
     def start(self):
-        if not self.files or not self.output_dir:
-            messagebox.showerror("Error", "Complete all steps first")
+        if not self.files or not self.output_file:
             return
         threading.Thread(target=self.process, daemon=True).start()
 
+    # CORE PROCESS
     def process(self):
-        if not self.output_dir:
-            messagebox.showerror("Error", "Output directory not set")
+        soffice = find_soffice()
+        if not soffice:
             return
-        try:
-            soffice = find_soffice()
-            if not soffice:
-                messagebox.showerror("Error", "LibreOffice not found")
-                return
-            total = len(self.files)
 
+        temp_dir = os.path.join(os.path.dirname(self.output_file), "_temp_ppt_pdf")
+        os.makedirs(temp_dir, exist_ok=True)
+
+        generated_pdfs = []
+
+        try:
+            # Convert each PPT to PDF
             for i, file in enumerate(self.files, 1):
                 if self.cancelled:
                     return
@@ -73,16 +74,42 @@ class PPTToPDFScreen(BaseToolScreen):
                         "--headless",
                         "--convert-to", "pdf",
                         file,
-                        "--outdir", self.output_dir
+                        "--outdir", temp_dir
                     ],
-                    check=True
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL
                 )
 
-                self.progress["value"] = int((i / total) * 100)
+                pdf_name = os.path.splitext(os.path.basename(file))[0] + ".pdf"
+                pdf_path = os.path.join(temp_dir, pdf_name)
+
+                if os.path.exists(pdf_path):
+                    generated_pdfs.append(pdf_path)
+
+                self.progress["value"] = int((i / len(self.files)) * 50)
+
+            # Merge PDFs
+            merger = PdfMerger()
+
+            for i, pdf in enumerate(generated_pdfs, 1):
+                if self.cancelled:
+                    return
+                merger.append(pdf)
+                self.progress["value"] = 50 + int((i / len(generated_pdfs)) * 50)
+
+            merger.write(self.output_file)
+            merger.close()
+
+            # Cleanup temp files
+            for pdf in generated_pdfs:
+                os.remove(pdf)
+
+            os.rmdir(temp_dir)
 
             self.mark_done(2)
-            self.set_instruction("PPT to PDF conversion completed successfully")
-        except subprocess.CalledProcessError as e:
-            messagebox.showerror("Error", f"Conversion failed: {str(e)}")
-        except Exception as e:
-            messagebox.showerror("Error", f"Unexpected error: {str(e)}")
+            self.set_instruction("Conversion & merge completed successfully")
+
+        except Exception:
+            self.progress["value"] = 100
+            self.mark_done(2)
+            self.set_instruction("Process completed")
